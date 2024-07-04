@@ -1,4 +1,4 @@
-package com.isaachahn.billedrelay.controllers;
+package com.isaachahn.billedrelay.rest;
 
 import com.isaachahn.billedrelay.models.ERole;
 import com.isaachahn.billedrelay.models.Role;

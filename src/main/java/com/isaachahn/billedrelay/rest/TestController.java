@@ -1,4 +1,4 @@
-package com.isaachahn.billedrelay.controllers;
+package com.isaachahn.billedrelay.rest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
