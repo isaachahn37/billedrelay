@@ -2,6 +2,7 @@ package com.isaachahn.billedrelay.rest;
 
 import com.isaachahn.billedrelay.models.entity.RentalPackage;
 import com.isaachahn.billedrelay.payload.request.RentalPackageCreationRequest;
+import com.isaachahn.billedrelay.payload.response.RentalPackagePayload;
 import com.isaachahn.billedrelay.service.RentalPackageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,20 +22,20 @@ public class RentalPackageController {
 
     @PostMapping
     @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<RentalPackage> createRentalPackage(@Valid @RequestBody RentalPackageCreationRequest request) throws BadRequestException {
+    public ResponseEntity<RentalPackagePayload> createRentalPackage(@Valid @RequestBody RentalPackagePayload request) throws BadRequestException {
         return ResponseEntity.ok(service.createRentalPackage(request));
     }
 
     @GetMapping
     @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<List<RentalPackage>> getAllRentalPackages() throws BadRequestException {
+    public ResponseEntity<List<RentalPackagePayload>> getAllRentalPackages() throws BadRequestException {
         return ResponseEntity.ok(service.getAllRentalPackages());
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('MODERATOR')")
-    public ResponseEntity<RentalPackage>  updateRentalPackage(RentalPackageCreationRequest request) throws BadRequestException {
-        return ResponseEntity.ok(service.updateRentalPackage(request));
+    public ResponseEntity<RentalPackagePayload>  updateRentalPackage(@PathVariable String id, @RequestBody RentalPackageCreationRequest request) throws BadRequestException {
+        return ResponseEntity.ok(service.updateRentalPackage(request, Long.parseLong(id)));
     }
 
     @DeleteMapping

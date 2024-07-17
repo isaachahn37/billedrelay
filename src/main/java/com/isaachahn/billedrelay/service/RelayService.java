@@ -3,6 +3,7 @@ package com.isaachahn.billedrelay.service;
 import com.isaachahn.billedrelay.models.User;
 import com.isaachahn.billedrelay.models.entity.Relay;
 import com.isaachahn.billedrelay.payload.request.ForceOnRelayRequest;
+import com.isaachahn.billedrelay.payload.request.RelayUpdateRequest;
 import com.isaachahn.billedrelay.payload.response.RelayResponse;
 import com.isaachahn.billedrelay.repository.RelayRepository;
 import com.isaachahn.billedrelay.repository.UserRepository;
@@ -37,6 +38,17 @@ public class RelayService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         return userRepository.findById(userDetails.getId()).orElseThrow(() -> new BadRequestException("User not found"));
+    }
+
+    public RelayResponse updateRelay(Long id, RelayUpdateRequest request) throws ChangeSetPersister.NotFoundException {
+        Relay relay = relayRepository.findById(id).orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+
+        relay.setRelayDescription(request.getRelayDescription());
+        relay.setRelayName(request.getRelayName());
+        relay.setRelayWhitelist(request.getRelayWhitelist());
+
+        Relay saved = relayRepository.save(relay);
+        return Util.mapToRelayResponse(saved);
     }
 
     public RelayResponse forceOnRelay(ForceOnRelayRequest request) throws ChangeSetPersister.NotFoundException, BadRequestException {

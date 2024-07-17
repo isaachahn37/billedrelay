@@ -16,5 +16,6 @@ public class RentalPackageCreationRequest {
     private Long addedMinutes;
     @NotNull
     private BigDecimal price;
+    @NotBlank
     private String relayWhitelist;
 }

@@ -4,9 +4,11 @@ import com.isaachahn.billedrelay.models.User;
 import com.isaachahn.billedrelay.models.entity.RentalEntity;
 import com.isaachahn.billedrelay.models.entity.RentalPackage;
 import com.isaachahn.billedrelay.payload.request.RentalPackageCreationRequest;
+import com.isaachahn.billedrelay.payload.response.RentalPackagePayload;
 import com.isaachahn.billedrelay.repository.RentalPackageRepository;
 import com.isaachahn.billedrelay.repository.UserRepository;
 import com.isaachahn.billedrelay.security.services.UserDetailsImpl;
+import com.isaachahn.billedrelay.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.Authentication;
@@ -21,34 +23,31 @@ public class RentalPackageService {
     private final RentalPackageRepository repository;
     private final UserRepository userRepository;
 
-    public RentalPackage createRentalPackage(RentalPackageCreationRequest request) throws BadRequestException {
+    public RentalPackagePayload createRentalPackage(RentalPackagePayload request) throws BadRequestException {
         User user = getUser();
         RentalEntity rentalEntity = user.getRentalEntity();
         if (rentalEntity == null) {
             throw new BadRequestException("Rental Package creation failed");
         } else {
-            RentalPackage rentalPackage = new RentalPackage()
-                    .setPackageName(request.getPackageName())
-                    .setMilisAddedOnTime(request.getAddedMinutes() * 60 * 1000)
-                    .setPrice(request.getPrice())
-                    .setRelayWhitelist(request.getRelayWhitelist())
+            RentalPackage mappedToRentalPackage = Util.mapToRentalPackage(request);
+            RentalPackage rentalPackage = mappedToRentalPackage
                     .setRentalEntity(rentalEntity)
                     .setLastModified(System.currentTimeMillis());
             RentalPackage saved = repository.save(rentalPackage);
-            return saved;
+            return Util.mapToRentalPackagePayload(saved);
         }
     }
 
-    public List<RentalPackage> getAllRentalPackages() throws BadRequestException {
+    public List<RentalPackagePayload> getAllRentalPackages() throws BadRequestException {
         RentalEntity rentalEntity = getUser().getRentalEntity();
         if (rentalEntity == null) {
             throw new BadRequestException("Rental Package creation failed");
         } else {
-            return repository.findByRentalEntity(rentalEntity);
+            return repository.findByRentalEntity(rentalEntity).stream().map(Util::mapToRentalPackagePayload).toList();
         }
     }
 
-    public RentalPackage updateRentalPackage(RentalPackageCreationRequest request, Long packageId) throws BadRequestException {
+    public RentalPackagePayload updateRentalPackage(RentalPackageCreationRequest request, Long packageId) throws BadRequestException {
         RentalPackage savedRentalPackage = repository.findById(packageId)
                 .orElseThrow(BadRequestException::new);
         if (savedRentalPackage.getRentalEntity().getId().equals(getUser().getRentalEntity().getId())) {
@@ -58,7 +57,7 @@ public class RentalPackageService {
             savedRentalPackage.setLastModified(System.currentTimeMillis());
 
             RentalPackage updated = repository.save(savedRentalPackage);
-            return updated;
+            return Util.mapToRentalPackagePayload(updated);
         } else {
             throw new BadRequestException("Rental Package update failed");
         }
