@@ -3,10 +3,12 @@ package com.isaachahn.billedrelay.rest;
 import com.isaachahn.billedrelay.models.ERole;
 import com.isaachahn.billedrelay.models.Role;
 import com.isaachahn.billedrelay.models.User;
+import com.isaachahn.billedrelay.models.entity.RentalEntity;
 import com.isaachahn.billedrelay.payload.request.LoginRequest;
 import com.isaachahn.billedrelay.payload.request.SignupRequest;
 import com.isaachahn.billedrelay.payload.response.JwtResponse;
 import com.isaachahn.billedrelay.payload.response.MessageResponse;
+import com.isaachahn.billedrelay.repository.RentalEntityRepository;
 import com.isaachahn.billedrelay.repository.RoleRepository;
 import com.isaachahn.billedrelay.repository.UserRepository;
 import com.isaachahn.billedrelay.security.jwt.JwtUtils;
@@ -38,6 +40,9 @@ public class AuthController {
 
   @Autowired
   RoleRepository roleRepository;
+
+  @Autowired
+  RentalEntityRepository rentalEntityRepository;
 
   @Autowired
   PasswordEncoder encoder;
@@ -116,6 +121,11 @@ public class AuthController {
     }
 
     user.setRoles(roles);
+
+    if (signUpRequest.getRentalId() != null) {
+      RentalEntity rentalEntity = rentalEntityRepository.findById(signUpRequest.getRentalId()).orElseThrow(() -> new RuntimeException("Error: Rental is not found."));
+      user.setRentalEntity(rentalEntity);
+    }
     userRepository.save(user);
 
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

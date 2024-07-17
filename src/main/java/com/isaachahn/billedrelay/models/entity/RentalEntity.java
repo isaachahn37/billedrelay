@@ -10,7 +10,8 @@ import lombok.experimental.Accessors;
 @Entity
 @Getter
 @Setter
-@Table(name = "rental_entity")
+@Table(name = "rental_entity",
+uniqueConstraints = {@UniqueConstraint(columnNames = "rental_name")})
 @Accessors(chain = true)
 public class RentalEntity {
     @Id

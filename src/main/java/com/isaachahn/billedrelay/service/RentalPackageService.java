@@ -48,13 +48,13 @@ public class RentalPackageService {
         }
     }
 
-    public RentalPackage updateRentalPackage(RentalPackage rentalPackage) throws BadRequestException {
-        RentalPackage savedRentalPackage = repository.findById(rentalPackage.getId())
+    public RentalPackage updateRentalPackage(RentalPackageCreationRequest request, Long packageId) throws BadRequestException {
+        RentalPackage savedRentalPackage = repository.findById(packageId)
                 .orElseThrow(BadRequestException::new);
         if (savedRentalPackage.getRentalEntity().getId().equals(getUser().getRentalEntity().getId())) {
-            savedRentalPackage.setPackageName(rentalPackage.getPackageName());
-            savedRentalPackage.setMilisAddedOnTime(rentalPackage.getMilisAddedOnTime());
-            savedRentalPackage.setPrice(rentalPackage.getPrice());
+            savedRentalPackage.setPackageName(request.getPackageName());
+            savedRentalPackage.setMilisAddedOnTime(request.getAddedMinutes() * 60 * 1000);
+            savedRentalPackage.setPrice(request.getPrice());
             savedRentalPackage.setLastModified(System.currentTimeMillis());
 
             RentalPackage updated = repository.save(savedRentalPackage);

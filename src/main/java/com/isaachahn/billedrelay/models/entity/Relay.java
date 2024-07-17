@@ -20,6 +20,7 @@ public class Relay {
     private Long id;
     @NotNull
     private Long onUntil;
+    private boolean forcedOn;
     @NotNull
     private Integer pinNumber;
     @NotBlank

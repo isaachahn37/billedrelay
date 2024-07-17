@@ -1,4 +1,4 @@
-package com.isaachahn.billedrelay.security.exception.exception;
+package com.isaachahn.billedrelay.security.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.coyote.BadRequestException;

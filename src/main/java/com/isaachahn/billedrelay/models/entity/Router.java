@@ -21,9 +21,6 @@ public class Router {
     @Size(max = 50)
     private String routerHardId;
 
-    @OneToMany(mappedBy = "router", fetch = FetchType.LAZY)
-    private Set<Relay> relays;
-
     @ManyToOne
     @JoinColumn(name = "rental_entity_id")
     private RentalEntity rentalEntity;
