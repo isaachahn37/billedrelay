@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface RelayRepository extends JpaRepository<Relay, Long> {
     List<Relay> findByRouter(Router router);
-    List<Relay> findByRentalEntity(RentalEntity rentalEntity);
+    List<Relay> findByRentalEntityOrderByRelayName(RentalEntity rentalEntity);
 }

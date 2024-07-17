@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface RentalPackageRepository extends JpaRepository<RentalPackage, Long> {
-    List<RentalPackage> findByRentalEntity(RentalEntity rentalEntity);
+    List<RentalPackage> findByRentalEntityOrderByPackageName(RentalEntity rentalEntity);
 }

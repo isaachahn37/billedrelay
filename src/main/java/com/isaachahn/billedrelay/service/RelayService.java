@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +31,8 @@ public class RelayService {
 
     public List<RelayResponse> getRelaysByRentalEntity() throws BadRequestException {
         User user = getUser();
-        List<Relay> relays = relayRepository.findByRentalEntity(user.getRentalEntity());
-        return relays.stream().map(Util::mapToRelayResponse).toList();
+        List<Relay> relays = relayRepository.findByRentalEntityOrderByRelayName(user.getRentalEntity());
+        return relays.stream().map(Util::mapToRelayResponse).collect(Collectors.toList());
     }
 
     private User getUser() throws BadRequestException {
@@ -56,7 +57,7 @@ public class RelayService {
         Long relayId = request.getRelayId();
         Relay relay = relayRepository.findById(relayId).orElseThrow(ChangeSetPersister.NotFoundException::new);
         if (relay.getRentalEntity().getId().equals(user.getRentalEntity().getId())) {
-            relay.setForcedOn(true);
+            relay.setForcedOn(!relay.isForcedOn());//toggle function, inverted if true
             return Util.mapToRelayResponse(relayRepository.save(relay));
         } else {
             throw new BadRequestException("Relay entity does not belong to user");

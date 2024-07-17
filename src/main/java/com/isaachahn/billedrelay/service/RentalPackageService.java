@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +44,7 @@ public class RentalPackageService {
         if (rentalEntity == null) {
             throw new BadRequestException("Rental Package creation failed");
         } else {
-            return repository.findByRentalEntity(rentalEntity).stream().map(Util::mapToRentalPackagePayload).toList();
+            return repository.findByRentalEntityOrderByPackageName(rentalEntity).stream().map(Util::mapToRentalPackagePayload).collect(Collectors.toList());
         }
     }
 

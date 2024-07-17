@@ -60,7 +60,7 @@ public class RouterService {
                     .setId(router.getId())
                     .setRelays(relays)
                     .setRentalEntity(routerResponse.getRentalEntity());
-        }).toList();
+        }).collect(Collectors.toList());
     }
 
     public List<RelayResponse> getRouterRelays(String routerHardId) throws BadRequestException {
@@ -74,7 +74,7 @@ public class RouterService {
 
     public List<RelayResponse> getRelays(Router router) {
         List<Relay> relays = relayRepository.findByRouter(router);
-        return relays.stream().map(Util::mapToRelayResponse).toList();
+        return relays.stream().map(Util::mapToRelayResponse).collect(Collectors.toList());
     }
 
     public List<RouterResponse> getRouters() throws BadRequestException {
@@ -90,7 +90,7 @@ public class RouterService {
                     .setId(router.getId())
                     .setRelays(relays)
                     .setRentalEntity(routerResponse.getRentalEntity());
-        }).toList();
+        }).collect(Collectors.toList());
     }
 
     public RouterResponse claimRouter(String routerHardId) throws BadRequestException {
@@ -105,7 +105,7 @@ public class RouterService {
 
 
         RouterResponse routerResponse = new RouterResponse();
-        List<RelayResponse> collect = relayResult.stream().map(Util::mapToRelayResponse).toList();
+        List<RelayResponse> collect = relayResult.stream().map(Util::mapToRelayResponse).collect(Collectors.toList());
         routerResponse
                 .setRouterHardId(routerResult.getRouterHardId())
                 .setId(routerResult.getId())
