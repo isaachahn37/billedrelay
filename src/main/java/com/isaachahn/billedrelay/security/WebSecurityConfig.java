@@ -85,6 +85,8 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
         .authorizeHttpRequests(auth -> 
           auth.requestMatchers("/api/auth/**").permitAll()
               .requestMatchers("/api/test/**").permitAll()
+              .requestMatchers("/router/relays/**").permitAll()
+              .requestMatchers("/router/relays-simplified/**").permitAll()
               .anyRequest().authenticated()
         );
     

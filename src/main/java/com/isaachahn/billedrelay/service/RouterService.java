@@ -7,6 +7,7 @@ import com.isaachahn.billedrelay.models.entity.Router;
 import com.isaachahn.billedrelay.payload.request.RelayPayload;
 import com.isaachahn.billedrelay.payload.request.RouterPayload;
 import com.isaachahn.billedrelay.payload.response.RelayResponse;
+import com.isaachahn.billedrelay.payload.response.RouterRelay;
 import com.isaachahn.billedrelay.payload.response.RouterResponse;
 import com.isaachahn.billedrelay.repository.RelayRepository;
 import com.isaachahn.billedrelay.repository.RentalEntityRepository;
@@ -69,6 +70,18 @@ public class RouterService {
             throw new BadRequestException("Router not found");
         } else {
             return getRelays(byRouterHardId);
+        }
+    }
+
+    public List<RouterRelay> getRouterRelaysSimplified(String routerHardId) throws BadRequestException {
+        Router byRouterHardId = routerRepository.findByRouterHardId(routerHardId);
+        if (byRouterHardId == null) {
+            throw new BadRequestException("Router not found");
+        } else {
+            return getRelays(byRouterHardId).stream().map(relayResponse ->
+                    new RouterRelay().setRelayHardId(relayResponse.getRelayHardId())
+                    .setOnState(relayResponse.isOnState())
+                    .setPinNumber(relayResponse.getPinNumber())).collect(Collectors.toList());
         }
     }
 
