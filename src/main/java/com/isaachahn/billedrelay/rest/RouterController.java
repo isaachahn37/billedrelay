@@ -4,6 +4,7 @@ import com.isaachahn.billedrelay.models.entity.Router;
 import com.isaachahn.billedrelay.payload.request.ClaimRouterRequest;
 import com.isaachahn.billedrelay.payload.request.RouterPayload;
 import com.isaachahn.billedrelay.payload.response.RelayResponse;
+import com.isaachahn.billedrelay.payload.response.RouterRelay;
 import com.isaachahn.billedrelay.payload.response.RouterResponse;
 import com.isaachahn.billedrelay.service.RouterService;
 import jakarta.validation.Valid;
@@ -47,8 +48,12 @@ public class RouterController {
     }
 
     @GetMapping("/relays/{routerhardid}")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<RelayResponse>> getRouterRelay(@PathVariable String routerhardid) throws BadRequestException {
         return ResponseEntity.ok(routerService.getRouterRelays(routerhardid));
+    }
+
+    @GetMapping("/relays-simplified/{routerhardid}")
+    public ResponseEntity<List<RouterRelay>> getRouterRelaySimplified(@PathVariable String routerhardid) throws BadRequestException {
+        return ResponseEntity.ok(routerService.getRouterRelaysSimplified(routerhardid));
     }
 }
