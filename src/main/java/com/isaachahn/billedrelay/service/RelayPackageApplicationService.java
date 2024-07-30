@@ -3,18 +3,26 @@ package com.isaachahn.billedrelay.service;
 import com.isaachahn.billedrelay.models.User;
 import com.isaachahn.billedrelay.models.entity.PackageApplied;
 import com.isaachahn.billedrelay.models.entity.Relay;
+import com.isaachahn.billedrelay.models.entity.RentalEntity;
 import com.isaachahn.billedrelay.models.entity.RentalPackage;
 import com.isaachahn.billedrelay.payload.request.PackageToRelayAssignmentRequest;
+import com.isaachahn.billedrelay.payload.response.PackageAppliedReport;
+import com.isaachahn.billedrelay.payload.response.PackageAppliedReportSummary;
 import com.isaachahn.billedrelay.repository.PackageAppliedRepository;
 import com.isaachahn.billedrelay.repository.RelayRepository;
 import com.isaachahn.billedrelay.repository.RentalPackageRepository;
 import com.isaachahn.billedrelay.repository.UserRepository;
 import com.isaachahn.billedrelay.security.services.UserDetailsImpl;
+import com.isaachahn.billedrelay.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +31,7 @@ public class RelayPackageApplicationService {
     private final RentalPackageRepository rentalPackageRepository;
     private final UserRepository userRepository;
     private final PackageAppliedRepository repository;
+    private final PackageAppliedRepository packageAppliedRepository;
 
     public PackageApplied assignPackageToRelay(PackageToRelayAssignmentRequest request) throws BadRequestException {
         User user = getUser();
@@ -52,6 +61,21 @@ public class RelayPackageApplicationService {
         } else {
             throw new BadRequestException("Rental Id mismatch");
         }
+    }
+
+    public PackageAppliedReportSummary getPackageAppliedReportSummary (String dateStr) throws BadRequestException {
+        User user = getUser();
+        RentalEntity rentalEntity = user.getRentalEntity();
+        long beginningOfDayTimestamp = Util.getBeginningOfDayTimestamp(dateStr);
+        long endOfDayTimestamp = Util.getEndOfDayTimestamp(dateStr);
+        List<PackageApplied> packageApplieds = packageAppliedRepository.
+                findAllByAppliedTimeStampGreaterThanAndAppliedTimeStampLessThanAndRentalEntityOrderByAppliedTimeStamp(beginningOfDayTimestamp, endOfDayTimestamp, rentalEntity);
+
+        List<PackageAppliedReport> collect = packageApplieds.stream().map(Util::mapToPackageAppliedResponse).collect(Collectors.toList());
+        return new PackageAppliedReportSummary()
+                .setDate(dateStr)
+                .setTotal(collect.stream().map(PackageAppliedReport::getPackageAppliedAmount).reduce(BigDecimal.ZERO, BigDecimal::add))
+                .setPackageAppliedReports(collect);
     }
 
     private User getUser() throws BadRequestException {

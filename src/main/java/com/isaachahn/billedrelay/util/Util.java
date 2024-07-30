@@ -1,11 +1,20 @@
 package com.isaachahn.billedrelay.util;
 
+import com.isaachahn.billedrelay.models.entity.PackageApplied;
 import com.isaachahn.billedrelay.models.entity.Relay;
 import com.isaachahn.billedrelay.models.entity.RentalPackage;
+import com.isaachahn.billedrelay.payload.response.PackageAppliedReport;
 import com.isaachahn.billedrelay.payload.response.RelayResponse;
 import com.isaachahn.billedrelay.payload.response.RentalPackagePayload;
+import org.apache.coyote.BadRequestException;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -51,6 +60,14 @@ public class Util {
                 .setForcedOn(relay.isForcedOn());
     }
 
+    public static PackageAppliedReport mapToPackageAppliedResponse(PackageApplied packageApplied) {
+        return new PackageAppliedReport()
+                .setDateTimeApplied(convertMillisecondsToGMT7(packageApplied.getAppliedTimeStamp()))
+                .setMinutesAdded(packageApplied.getRentalPackage().getMilisAddedOnTime() / 60L)
+                .setPackageAppliedAmount(packageApplied.getRentalPackage().getPrice())
+                .setRelayName(packageApplied.getRelay().getRelayName());
+    }
+
     public static String convertMillisecondsToGMT7(long milliseconds) {
         // Create a SimpleDateFormat instance with the desired format
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
@@ -63,5 +80,32 @@ public class Util {
 
         // Format the date
         return sdf.format(date);
+    }
+
+    public static long getBeginningOfDayTimestamp(String dateStr) throws BadRequestException {
+        return getTimestamp(dateStr, true);
+    }
+
+    public static long getEndOfDayTimestamp(String dateStr) throws BadRequestException {
+        return getTimestamp(dateStr, false);
+    }
+
+    private static long getTimestamp(String dateStr, boolean isBeginningOfDay) throws BadRequestException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        try {
+            LocalDate localDate = LocalDate.parse(dateStr, formatter);
+            ZoneId zoneId = ZoneId.of("GMT+7");
+            ZonedDateTime zonedDateTime;
+
+            if (isBeginningOfDay) {
+                zonedDateTime = localDate.atStartOfDay(zoneId);
+            } else {
+                zonedDateTime = localDate.atTime(LocalTime.MAX).atZone(zoneId);
+            }
+
+            return zonedDateTime.toEpochSecond();
+        } catch (DateTimeParseException e) {
+            throw new BadRequestException("Invalid date format. Please use dd-MM-yyyy format.", e);
+        }
     }
 }
