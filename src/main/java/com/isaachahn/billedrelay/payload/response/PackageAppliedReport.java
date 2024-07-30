@@ -11,6 +11,10 @@ import java.math.BigDecimal;
 public class PackageAppliedReport {
     private String dateTimeApplied;
     private Long minutesAdded;
+    private String packageName;
     private BigDecimal packageAppliedAmount;
     private String relayName;
+    private String relayHardId;
+    private String relayWhitelist;
+    private String relayDescription;
 }

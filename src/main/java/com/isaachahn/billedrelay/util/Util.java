@@ -63,9 +63,13 @@ public class Util {
     public static PackageAppliedReport mapToPackageAppliedResponse(PackageApplied packageApplied) {
         return new PackageAppliedReport()
                 .setDateTimeApplied(convertMillisecondsToGMT7(packageApplied.getAppliedTimeStamp()))
+                .setPackageName(packageApplied.getRentalPackage().getPackageName())
                 .setMinutesAdded(packageApplied.getRentalPackage().getMilisAddedOnTime() / 60L)
                 .setPackageAppliedAmount(packageApplied.getRentalPackage().getPrice())
-                .setRelayName(packageApplied.getRelay().getRelayName());
+                .setRelayName(packageApplied.getRelay().getRelayName())
+                .setRelayHardId(packageApplied.getRelay().getRelayHardId())
+                .setRelayWhitelist(packageApplied.getRelay().getRelayWhitelist())
+                .setRelayDescription(packageApplied.getRelay().getRelayDescription());
     }
 
     public static String convertMillisecondsToGMT7(long milliseconds) {
