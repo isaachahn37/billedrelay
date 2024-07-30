@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public interface PackageAppliedRepository extends JpaRepository<PackageApplied, Long> {
     List<PackageApplied>  findByRentalEntity(RentalEntity rentalEntity);
-    List<PackageApplied> findByAppliedTimeStampBetween(Long greaterThan, Long lessThan);
+    List<PackageApplied> findAllByAppliedTimeStampBetween(Long greaterThan, Long lessThan);
+//    List<PackageApplied> findByAppliedTimeStampBetween(Long greaterThan, Long lessThan);
 //    @Query("SELECT p FROM PackageApplied p WHERE p.appliedTimeStamp BETWEEN :startTime AND :endTime AND p.rentalEntity = :rentalEntity")
 //    List<PackageApplied> findByAppliedTimeStampBetweenAndRentalEntity(
 //            @Param("startTime") Long startTime,
