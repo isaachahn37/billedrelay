@@ -81,7 +81,7 @@ public class RelayPackageApplicationService {
         logger.info("Get report of timestamp : {} - {}", beginningOfDayTimestamp, endOfDayTimestamp);
 
         List<PackageApplied> packageApplieds = repository.
-                findByAppliedTimeStampBetweenAndRentalEntity(beginningOfDayTimestamp, endOfDayTimestamp, rentalEntity);
+                findByAppliedTimeStampBetween(beginningOfDayTimestamp, endOfDayTimestamp);
 
         List<PackageAppliedReport> collect = packageApplieds.stream().map(Util::mapToPackageAppliedResponse).collect(Collectors.toList());
         return new PackageAppliedReportSummary()
