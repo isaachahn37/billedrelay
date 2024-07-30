@@ -66,6 +66,13 @@ public class RelayPackageApplicationService {
         }
     }
 
+    public List<PackageApplied> getAllRentalPackageApplied() throws BadRequestException {
+        User user = getUser();
+        RentalEntity rentalEntity = user.getRentalEntity();
+        List<PackageApplied> packageApplieds = packageAppliedRepository.findByRentalEntity(rentalEntity);
+        return packageApplieds;
+    }
+
     public PackageAppliedReportSummary getPackageAppliedReportSummary (String dateStr) throws BadRequestException {
         User user = getUser();
         RentalEntity rentalEntity = user.getRentalEntity();
