@@ -83,11 +83,11 @@ public class Util {
     }
 
     public static long getBeginningOfDayTimestamp(String dateStr) throws BadRequestException {
-        return getTimestamp(dateStr, true);
+        return getTimestamp(dateStr, true) * 1000;
     }
 
     public static long getEndOfDayTimestamp(String dateStr) throws BadRequestException {
-        return getTimestamp(dateStr, false);
+        return getTimestamp(dateStr, false) * 1000;
     }
 
     private static long getTimestamp(String dateStr, boolean isBeginningOfDay) throws BadRequestException {
