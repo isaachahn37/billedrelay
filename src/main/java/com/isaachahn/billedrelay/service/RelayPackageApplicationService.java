@@ -16,6 +16,8 @@ import com.isaachahn.billedrelay.security.services.UserDetailsImpl;
 import com.isaachahn.billedrelay.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RelayPackageApplicationService {
+    Logger logger = LoggerFactory.getLogger(RelayPackageApplicationService.class);
     private final RelayRepository relayRepository;
     private final RentalPackageRepository rentalPackageRepository;
     private final UserRepository userRepository;
@@ -68,8 +71,10 @@ public class RelayPackageApplicationService {
         RentalEntity rentalEntity = user.getRentalEntity();
         long beginningOfDayTimestamp = Util.getBeginningOfDayTimestamp(dateStr);
         long endOfDayTimestamp = Util.getEndOfDayTimestamp(dateStr);
+        logger.info("Get report of timestamp : {} - {}", beginningOfDayTimestamp, endOfDayTimestamp);
+
         List<PackageApplied> packageApplieds = packageAppliedRepository.
-                findAllByAppliedTimeStampGreaterThanAndAppliedTimeStampLessThanAndRentalEntityOrderByAppliedTimeStamp(beginningOfDayTimestamp, endOfDayTimestamp, rentalEntity);
+                findByAppliedTimeStampGreaterThanAndAppliedTimeStampLessThanAndRentalEntityOrderByAppliedTimeStamp(beginningOfDayTimestamp, endOfDayTimestamp, rentalEntity);
 
         List<PackageAppliedReport> collect = packageApplieds.stream().map(Util::mapToPackageAppliedResponse).collect(Collectors.toList());
         return new PackageAppliedReportSummary()
