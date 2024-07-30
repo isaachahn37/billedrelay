@@ -34,7 +34,7 @@ public class RelayPackageApplicationService {
     private final RentalPackageRepository rentalPackageRepository;
     private final UserRepository userRepository;
     private final PackageAppliedRepository repository;
-    private final PackageAppliedRepository packageAppliedRepository;
+//    private final PackageAppliedRepository packageAppliedRepository;
 
     public PackageApplied assignPackageToRelay(PackageToRelayAssignmentRequest request) throws BadRequestException {
         User user = getUser();
@@ -69,7 +69,7 @@ public class RelayPackageApplicationService {
     public List<PackageApplied> getAllRentalPackageApplied() throws BadRequestException {
         User user = getUser();
         RentalEntity rentalEntity = user.getRentalEntity();
-        List<PackageApplied> packageApplieds = packageAppliedRepository.findByRentalEntity(rentalEntity);
+        List<PackageApplied> packageApplieds = repository.findByRentalEntity(rentalEntity);
         return packageApplieds;
     }
 
@@ -80,8 +80,8 @@ public class RelayPackageApplicationService {
         long endOfDayTimestamp = Util.getEndOfDayTimestamp(dateStr);
         logger.info("Get report of timestamp : {} - {}", beginningOfDayTimestamp, endOfDayTimestamp);
 
-        List<PackageApplied> packageApplieds = packageAppliedRepository.
-                findByAppliedTimeStampGreaterThanAndAppliedTimeStampLessThanAndRentalEntityOrderByAppliedTimeStamp(beginningOfDayTimestamp, endOfDayTimestamp, rentalEntity);
+        List<PackageApplied> packageApplieds = repository.
+                findByAppliedTimeStampBetweenAndRentalEntity(beginningOfDayTimestamp, endOfDayTimestamp, rentalEntity);
 
         List<PackageAppliedReport> collect = packageApplieds.stream().map(Util::mapToPackageAppliedResponse).collect(Collectors.toList());
         return new PackageAppliedReportSummary()

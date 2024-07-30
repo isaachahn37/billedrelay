@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface PackageAppliedRepository extends JpaRepository<PackageApplied, Long> {
     List<PackageApplied>  findByRentalEntity(RentalEntity rentalEntity);
-    List<PackageApplied> findByAppliedTimeStampGreaterThanAndAppliedTimeStampLessThanAndRentalEntityOrderByAppliedTimeStamp(Long greaterThan, Long lessThan, RentalEntity rentalEntity);
+    List<PackageApplied> findByAppliedTimeStampBetweenAndRentalEntity(Long greaterThan, Long lessThan, RentalEntity rentalEntity);
 }
