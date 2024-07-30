@@ -81,15 +81,7 @@ public class RelayPackageApplicationService {
         logger.info("Get report of timestamp : {} - {}", beginningOfDayTimestamp, endOfDayTimestamp);
 
         List<PackageApplied> packageApplieds = repository.
-                findByAppliedTimeStampGreaterThan(beginningOfDayTimestamp);
-        logger.info("result : " + packageApplieds.size());
-        packageApplieds.forEach(packageApplied -> logger.info("Fetched PackageApplied: id={}, appliedTimeStamp={}, rentalEntityId={}, minutesAdded={}, packageAppliedAmount={}, relayName={}",
-                packageApplied.getId(),
-                packageApplied.getAppliedTimeStamp(),
-                packageApplied.getRentalEntity().getId(),
-                packageApplied.getRentalPackage().getPackageName(),
-                packageApplied.getRentalPackage().getPrice(),
-                packageApplied.getRelay().getRelayName()));
+                findByAppliedTimeStampGreaterThanAndAppliedTimeStampLessThanAndRentalEntity(beginningOfDayTimestamp, endOfDayTimestamp, rentalEntity);
         List<PackageAppliedReport> collect = packageApplieds.stream().map(Util::mapToPackageAppliedResponse).collect(Collectors.toList());
         return new PackageAppliedReportSummary()
                 .setDate(dateStr)

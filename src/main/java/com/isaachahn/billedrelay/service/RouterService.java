@@ -10,18 +10,18 @@ import com.isaachahn.billedrelay.payload.response.RelayResponse;
 import com.isaachahn.billedrelay.payload.response.RouterRelay;
 import com.isaachahn.billedrelay.payload.response.RouterResponse;
 import com.isaachahn.billedrelay.repository.RelayRepository;
-import com.isaachahn.billedrelay.repository.RentalEntityRepository;
 import com.isaachahn.billedrelay.repository.RouterRepository;
 import com.isaachahn.billedrelay.repository.UserRepository;
 import com.isaachahn.billedrelay.security.services.UserDetailsImpl;
 import com.isaachahn.billedrelay.util.Util;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class RouterService {
+    Logger logger = LoggerFactory.getLogger(RouterService.class);
     private final RouterRepository repository;
     private final RelayRepository relayRepository;
     private final UserRepository userRepository;
@@ -74,6 +75,7 @@ public class RouterService {
     }
 
     public List<RouterRelay> getRouterRelaysSimplified(String routerHardId) throws BadRequestException {
+        logger.info("fetching router relays simplified : " + routerHardId);
         Router byRouterHardId = routerRepository.findByRouterHardId(routerHardId);
         if (byRouterHardId == null) {
             throw new BadRequestException("Router not found");
