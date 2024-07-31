@@ -74,7 +74,7 @@ public class Util {
 
     public static String convertMillisecondsToGMT7(long milliseconds) {
         // Create a SimpleDateFormat instance with the desired format
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         // Set the timezone to GMT+7
         sdf.setTimeZone(TimeZone.getTimeZone("GMT+7"));
