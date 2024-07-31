@@ -63,4 +63,17 @@ public class RelayService {
             throw new BadRequestException("Relay entity does not belong to user");
         }
     }
+
+    public RelayResponse forceOffRelay(ForceOnRelayRequest request) throws ChangeSetPersister.NotFoundException, BadRequestException {
+        User user = getUser();
+        Long relayId = request.getRelayId();
+        Relay relay = relayRepository.findById(relayId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+        if (relay.getRentalEntity().getId().equals(user.getRentalEntity().getId())) {
+            relay.setOnUntil(System.currentTimeMillis());//toggle function, inverted if true
+            return Util.mapToRelayResponse(relayRepository.save(relay));
+        } else {
+            throw new BadRequestException("Relay entity does not belong to user");
+        }
+    }
+
 }

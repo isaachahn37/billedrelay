@@ -40,6 +40,12 @@ public class RelayController {
         return ResponseEntity.ok(service.forceOnRelay(request));
     }
 
+    @PutMapping("/forceoff")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<RelayResponse> forceOffRelay(@Valid @RequestBody ForceOnRelayRequest request) throws ChangeSetPersister.NotFoundException, BadRequestException {
+        return ResponseEntity.ok(service.forceOffRelay(request));
+    }
+
     @PutMapping("/{relayId}")
     @PreAuthorize("hasRole('MODERATOR') or hasRole('USER')")
     public ResponseEntity<RelayResponse> updateRelay(@PathVariable String relayId, @Valid @RequestBody RelayUpdateRequest request) throws ChangeSetPersister.NotFoundException {
