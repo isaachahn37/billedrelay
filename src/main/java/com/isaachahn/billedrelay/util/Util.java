@@ -64,7 +64,7 @@ public class Util {
         return new PackageAppliedReport()
                 .setDateTimeApplied(convertMillisecondsToGMT7(packageApplied.getAppliedTimeStamp()))
                 .setPackageName(packageApplied.getRentalPackage().getPackageName())
-                .setMinutesAdded(packageApplied.getRentalPackage().getMilisAddedOnTime() / 60L)
+                .setMinutesAdded(packageApplied.getRentalPackage().getMilisAddedOnTime() / 60000L)
                 .setPackageAppliedAmount(packageApplied.getRentalPackage().getPrice())
                 .setRelayName(packageApplied.getRelay().getRelayName())
                 .setRelayHardId(packageApplied.getRelay().getRelayHardId())

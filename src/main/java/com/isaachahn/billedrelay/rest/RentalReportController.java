@@ -6,6 +6,7 @@ import com.isaachahn.billedrelay.service.RelayPackageApplicationService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 public class RentalReportController {
     private final RelayPackageApplicationService service;
     @GetMapping("/{date}")
+    @PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<PackageAppliedReportSummary> getReport(@PathVariable String date) throws BadRequestException {
         return ResponseEntity.ok(service.getPackageAppliedReportSummary(date));
     }
