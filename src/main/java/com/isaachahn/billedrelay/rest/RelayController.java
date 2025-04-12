@@ -3,6 +3,7 @@ package com.isaachahn.billedrelay.rest;
 import com.isaachahn.billedrelay.models.entity.Relay;
 import com.isaachahn.billedrelay.payload.request.ForceOnRelayRequest;
 import com.isaachahn.billedrelay.payload.request.RelayUpdateRequest;
+import com.isaachahn.billedrelay.payload.request.SwitchOnUntilRequest;
 import com.isaachahn.billedrelay.payload.response.RelayResponse;
 import com.isaachahn.billedrelay.service.RelayService;
 import jakarta.validation.Valid;
@@ -50,6 +51,13 @@ public class RelayController {
     @PreAuthorize("hasRole('MODERATOR') or hasRole('USER')")
     public ResponseEntity<RelayResponse> updateRelay(@PathVariable String relayId, @Valid @RequestBody RelayUpdateRequest request) throws ChangeSetPersister.NotFoundException {
         return ResponseEntity.ok(service.updateRelay(Long.parseLong(relayId), request));
+    }
+
+    @PutMapping("/switch-onuntil")
+    @PreAuthorize("hasRole('MODERATOR')")
+    public ResponseEntity<RelayResponse> switchOnUntil(@Valid @RequestBody SwitchOnUntilRequest request)
+            throws ChangeSetPersister.NotFoundException, BadRequestException {
+        return ResponseEntity.ok(service.switchOnUntil(request));
     }
 
 }
